@@ -1,0 +1,83 @@
+@model IncidentRegistrationMvc.Models.UserEditViewModel
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7 col-xl-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="mb-0">Edit User</h3>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Back</a>
+                </div>
+
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="UserId" type="hidden" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="NewPassword" class="form-label"></label>
+                        <input asp-for="NewPassword" class="form-control" />
+                        <span asp-validation-for="NewPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="UserType" class="form-label"></label>
+                        <select asp-for="UserType" class="form-select">
+                            <option value="User">User</option>
+                            @if (string.Equals(Context.Session.GetString("UserType"), "SuperAdmin", StringComparison.OrdinalIgnoreCase)) { <option value="Admin">Admin</option> }
+                        </select>
+                        <span asp-validation-for="UserType" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label"></label>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="SelectedAccessRightIds" class="form-label"></label>
+                        <div class="border rounded p-3">
+                            @if (Model.AccessRightOptions.Any())
+                            {
+                                @foreach (var accessRight in Model.AccessRightOptions)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               name="SelectedAccessRightIds"
+                                               value="@accessRight.Value"
+                                               id="accessRight_@accessRight.Value"
+                                               checked="@accessRight.Selected" />
+                                        <label class="form-check-label" for="accessRight_@accessRight.Value">@accessRight.Text</label>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-muted">No active access rights found.</div>
+                            }
+                        </div>
+                        <span asp-validation-for="SelectedAccessRightIds" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-purple">Save User</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

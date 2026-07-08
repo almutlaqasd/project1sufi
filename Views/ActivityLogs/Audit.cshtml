@@ -1,0 +1,6 @@
+@model List<IncidentRegistrationMvc.Models.AuditLog>
+@{ ViewData["Title"] = "All Activity"; }
+<div class="page-heading"><div><span class="eyebrow">Super Admin</span><h2>Admin Activity Audit</h2></div></div>
+<div class="data-panel app-table-panel"><div class="table-responsive app-table-scroll"><table class="table table-hover align-middle app-data-table"><thead><tr><th>When</th><th>Who</th><th>Action</th><th>Record</th><th>Changes</th></tr></thead><tbody>
+@foreach(var log in Model){<tr><td>@log.CreatedOn.ToString("dd/MM/yyyy HH:mm:ss")</td><td>@log.ActorName</td><td>@log.Action</td><td>@log.EntityType #@log.EntityId</td><td title="@log.Changes">@log.Changes</td></tr>}
+</tbody></table></div></div>

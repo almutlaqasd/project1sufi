@@ -1,0 +1,81 @@
+@model List<IncidentRegistrationMvc.Models.User>
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">Administration</span>
+        <h2>Users</h2>
+    </div>
+    <a class="btn btn-purple" asp-action="Register">Add User</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="data-panel app-table-panel">
+    <div class="table-responsive app-table-scroll">
+        <table class="table table-hover align-middle app-data-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>User Type</th>
+                    <th>Access Rights</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
+                        <td>@user.UserType</td>
+                        <td>
+                            @{
+                                var accessRights = user.AccessRights
+                                    .Where(x => x.UserAccessRight.IsActive)
+                                    .Select(x => x.UserAccessRight.Name)
+                                    .OrderBy(x => x)
+                                    .ToList();
+                            }
+                            @(accessRights.Any() ? string.Join(", ", accessRights) : "-")
+                        </td>
+                        <td>
+                            @if (user.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@user.UserId">Edit</a>
+                            @if (user.IsActive)
+                            {
+                                <form asp-action="Delete" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@user.UserId" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

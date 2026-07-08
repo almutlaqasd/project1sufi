@@ -1,0 +1,94 @@
+@model List<IncidentRegistrationMvc.Models.LocationMachineMaster>
+@{
+    ViewData["Title"] = "Location Machines";
+    DateTime today = DateTime.Today;
+    DateTime warningUntil = today.AddDays(30);
+}
+
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">Master Data</span>
+        <h2>Location Machines</h2>
+    </div>
+    <a class="btn btn-purple" asp-action="Create">Add Machine</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="data-panel app-table-panel">
+    <div class="table-responsive app-table-scroll">
+        <table class="table table-hover align-middle app-data-table machine-data-table">
+            <thead>
+                <tr>
+                    <th>Echo Machine</th>
+                    <th>Clinical Eng. #</th>
+                    <th>Location</th>
+                    <th>Serial No.</th>
+                    <th>Property Tag</th>
+                    <th>Type</th>
+                    <th>Date Acquired</th>
+                    <th>Weekly Filter</th>
+                    <th>Annual Due</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    DateTime? annualDueDate = item.AnnualPreventiveDueDate;
+                    bool isExpired = item.IsActive && annualDueDate.HasValue && annualDueDate.Value.Date < today;
+                    bool isExpiringSoon = item.IsActive && annualDueDate.HasValue && annualDueDate.Value.Date >= today && annualDueDate.Value.Date <= warningUntil;
+                    string rowClass = isExpired ? "machine-row-expired" : isExpiringSoon ? "machine-row-warning" : string.Empty;
+                    string annualDueText = item.AnnualDueDate ?? item.AnnualPreventiveDueDate?.ToString("MMM-yy") ?? "-";
+
+                    <tr class="@rowClass">
+                        <td>@item.EchoMachine</td>
+                        <td>@item.ClinicalEngNumber</td>
+                        <td>@item.Location</td>
+                        <td>@(item.SerialNumber ?? "-")</td>
+                        <td>@item.PropertyTagNumber</td>
+                        <td>@(item.UserAccessRight?.Name ?? "-")</td>
+                        <td>@(item.DateAcquired ?? "-")</td>
+                        <td>@(item.WeeklyFilterCleaningDone ?? "-")</td>
+                        <td>
+                            @annualDueText
+                            @if (isExpired)
+                            {
+                                <span class="badge bg-danger ms-1">Expired</span>
+                            }
+                            else if (isExpiringSoon)
+                            {
+                                <span class="badge bg-warning text-dark ms-1">Due Soon</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            @if (item.IsActive)
+                            {
+                                <form asp-action="Delete" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

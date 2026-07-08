@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IncidentRegistrationMvc.Business\IncidentRegistrationMvc.Business.csproj" />
+    <Compile Include="..\Models\**\*.cs" Link="Models\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\Data\ApplicationDbContext.cs" Link="Data\ApplicationDbContext.cs" />
+    <Compile Include="..\Services\ClientConfigurationService.cs" Link="Services\ClientConfigurationService.cs" />
+  </ItemGroup>
+</Project>

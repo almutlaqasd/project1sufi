@@ -1,0 +1,47 @@
+@model List<IncidentRegistrationMvc.Models.UserAccessRightMappingLog>
+@{
+    ViewData["Title"] = "Access Rights Activity";
+}
+
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">Audit</span>
+        <h2>Access Rights Activity</h2>
+    </div>
+    <a class="btn btn-outline-secondary" asp-controller="ActivityLogs" asp-action="Users">User Log</a>
+</div>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-warning">@ViewBag.Error</div>
+}
+
+<div class="data-panel app-table-panel">
+    <div class="table-responsive app-table-scroll">
+        <table class="table table-hover align-middle app-data-table">
+            <thead>
+                <tr>
+                    <th>When</th>
+                    <th>User Id</th>
+                    <th>Access Right</th>
+                    <th>Activity</th>
+                    <th>By</th>
+                    <th>Host</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.ActivityOn.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td>@item.UserId</td>
+                        <td>@(item.AccessRightName ?? item.UserAccessRightId.ToString())</td>
+                        <td><span class="status-pill status-@item.ActivityType.ToLowerInvariant()">@item.ActivityType</span></td>
+                        <td>@(item.ActivityBy ?? "-")</td>
+                        <td>@(item.HostName ?? "-")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

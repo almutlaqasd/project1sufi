@@ -1,0 +1,148 @@
+@model IncidentRegistrationMvc.Models.LocationMachineMaster
+@{
+    bool isEdit = Model.Id > 0;
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="mb-0">@(isEdit ? "Edit Machine" : "Add Machine")</h3>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Back</a>
+                </div>
+
+                <form asp-action="@(isEdit ? "Edit" : "Create")" method="post" class="machine-registration-form" novalidate>
+                    @Html.AntiForgeryToken()
+                    <input asp-for="Id" type="hidden" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="EchoMachine" class="form-label"></label><span class="required-indicator" aria-hidden="true">*</span>
+                            <input asp-for="EchoMachine" class="form-control" required />
+                            <span asp-validation-for="EchoMachine" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ClinicalEngNumber" class="form-label"></label><span class="required-indicator" aria-hidden="true">*</span>
+                            <input asp-for="ClinicalEngNumber" class="form-control" required />
+                            <span asp-validation-for="ClinicalEngNumber" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Location" class="form-label"></label><span class="required-indicator" aria-hidden="true">*</span>
+                            <input asp-for="Location" class="form-control" required />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="SerialNumber" class="form-label"></label><span class="required-indicator" aria-hidden="true">*</span>
+                            <input asp-for="SerialNumber" class="form-control" required />
+                            <span asp-validation-for="SerialNumber" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PropertyTagNumber" class="form-label"></label><span class="required-indicator" aria-hidden="true">*</span>
+                            <input asp-for="PropertyTagNumber" class="form-control" required />
+                            <span asp-validation-for="PropertyTagNumber" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="DateAcquired" class="form-label"></label><span class="required-indicator" aria-hidden="true">*</span>
+                            <input asp-for="DateAcquired" class="form-control" required />
+                            <span asp-validation-for="DateAcquired" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="UserAccessRightId" class="form-label"></label><span class="required-indicator" aria-hidden="true">*</span>
+                            <select asp-for="UserAccessRightId" asp-items="ViewBag.TypeOptions" class="form-select" required>
+                                <option value="">Select Type</option>
+                            </select>
+                            <span asp-validation-for="UserAccessRightId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="DateReported" class="form-label"></label><span class="required-indicator" aria-hidden="true">*</span>
+                            <input asp-for="DateReported" class="form-control" required />
+                            <span asp-validation-for="DateReported" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="WeeklyFilterCleaningDone" class="form-label"></label><span class="required-indicator" aria-hidden="true">*</span>
+                            <input asp-for="WeeklyFilterCleaningDone" class="form-control" required />
+                            <span asp-validation-for="WeeklyFilterCleaningDone" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="AnnualDueDate" class="form-label"></label><span class="required-indicator" aria-hidden="true">*</span>
+                            <input asp-for="AnnualDueDate" class="form-control" required />
+                            <span asp-validation-for="AnnualDueDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="AnnualPreventiveDueDate" class="form-label"></label><span class="required-indicator" aria-hidden="true">*</span>
+                            <input asp-for="AnnualPreventiveDueDate" type="date" class="form-control" required />
+                            <span asp-validation-for="AnnualPreventiveDueDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <div class="form-check mb-2">
+                                <input asp-for="IsActive" class="form-check-input" />
+                                <label asp-for="IsActive" class="form-check-label"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Problems" class="form-label"></label>
+                            <textarea asp-for="Problems" rows="3" class="form-control"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ActionTaken" class="form-label"></label>
+                            <textarea asp-for="ActionTaken" rows="3" class="form-control"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="FinalActionRecommendation" class="form-label"></label>
+                            <textarea asp-for="FinalActionRecommendation" rows="3" class="form-control"></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-purple mt-4">@(isEdit ? "Save Machine" : "Register Machine")</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    const form = document.querySelector('.machine-registration-form');
+    if (!form) return;
+
+    const fields = [...form.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"]), select, textarea')];
+
+    const messageElement = (field) => form.querySelector(`[data-valmsg-for="${CSS.escape(field.name)}"]`);
+    const validateField = (field) => {
+        const message = messageElement(field);
+        if (!message) return true;
+
+        let error = '';
+        if (field.required && !field.value.trim()) {
+            error = field.dataset.valRequired || 'This field is required.';
+        } else if (!field.validity.valid) {
+            error = field.dataset.valDate || field.dataset.valNumber || field.validationMessage;
+        }
+
+        message.textContent = error;
+        message.classList.toggle('field-validation-error', !!error);
+        message.classList.toggle('field-validation-valid', !error);
+        field.classList.toggle('is-invalid', !!error);
+        field.setAttribute('aria-invalid', String(!!error));
+        return !error;
+    };
+
+    fields.forEach((field) => {
+        field.addEventListener('blur', () => validateField(field));
+        field.addEventListener('change', () => validateField(field));
+        field.addEventListener('input', () => {
+            if (field.classList.contains('is-invalid')) validateField(field);
+        });
+    });
+
+    form.addEventListener('submit', (event) => {
+        const invalidFields = fields.filter((field) => !validateField(field));
+        if (!invalidFields.length) return;
+
+        event.preventDefault();
+        invalidFields[0].focus();
+    });
+})();
+</script>

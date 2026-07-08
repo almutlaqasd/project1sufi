@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Reports";
+}
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">Analytics</span>
+        <h2>Reports</h2>
+    </div>
+</div>
+<div class="row g-3 mb-4">
+    <div class="col-lg-6"><div class="card"><div class="card-body"><h5>Priority</h5><canvas id="priorityChart"></canvas></div></div></div>
+    <div class="col-lg-6"><div class="card"><div class="card-body"><h5>Resolve</h5><canvas id="statusChart"></canvas></div></div></div>
+    <div class="col-lg-6"><div class="card"><div class="card-body"><h5>Most Reported Machines</h5><canvas id="machineChart"></canvas></div></div></div>
+    <div class="col-lg-6"><div class="card"><div class="card-body"><h5>Reports by Department / Equipment Group</h5><canvas id="departmentChart"></canvas></div></div></div>
+    <div class="col-lg-6"><div class="card"><div class="card-body"><h5>Top Reporting Staff</h5><canvas id="staffChart"></canvas></div></div></div>
+    <div class="col-lg-6"><div class="card"><div class="card-body"><h5>Monthly Reports</h5><canvas id="monthChart"></canvas></div></div></div>
+</div>
+
+@section Scripts {
+<script>
+const chart = (id, type, labels, values, label, color = '#7048a8') => new Chart(document.getElementById(id), {
+    type,
+    data: { labels, datasets: [{ label, data: values, backgroundColor: color }] },
+    options: { responsive: true }
+});
+chart('priorityChart', 'pie', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.PriorityLabels)), @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.PriorityCounts)), 'Reports');
+chart('statusChart', 'bar', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.StatusLabels)), @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.StatusCounts)), 'Count');
+chart('machineChart', 'bar', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.MachineLabels)), @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.MachineCounts)), 'Reports');
+chart('departmentChart', 'doughnut', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.DepartmentLabels)), @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.DepartmentCounts)), 'Reports');
+chart('staffChart', 'bar', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.StaffLabels)), @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.StaffCounts)), 'Submitted');
+chart('monthChart', 'line', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.MonthLabels)), @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.MonthCounts)), 'Reports');
+</script>
+}

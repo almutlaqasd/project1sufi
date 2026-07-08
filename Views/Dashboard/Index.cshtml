@@ -1,0 +1,65 @@
+@model List<IncidentRegistrationMvc.Models.FormResponse>
+@{
+    ViewData["Title"] = "Dashboard";
+    bool isAdmin = ViewBag.IsAdmin == true;
+}
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">Operations</span>
+        <h2>@(isAdmin ? "Form Responses Dashboard" : "My Requests")</h2>
+    </div>
+</div>
+<div class="data-panel app-table-panel">
+    <div class="table-responsive app-table-scroll">
+        <table class="table table-hover align-middle app-data-table dashboard-report-table">
+            <thead>
+                <tr>
+                    <th>Response Id</th><th>Submitted On</th><th>Reported By</th><th>Email address</th><th>Reporter Name</th><th>Type</th><th>Device</th><th>Location</th><th>Echo Machine</th><th>Clinical Eng. #</th><th>Serial No.</th><th>Property Tag</th><th>Annual Preventive Due Date</th><th>Description</th><th>Image</th><th>Priority</th><th>Resolved</th><th>Resolved On</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                string priorityClass = item.Priority == "High" ? "priority-high" : item.Priority == "Medium" ? "priority-medium" : "priority-low";
+                <tr>
+                    <td title="@item.ResponseId">@item.ResponseId</td>
+                    <td>@item.CreatedOn.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td title="@(item.ReportedByUser?.Username ?? "-")">@(item.ReportedByUser?.Username ?? "-")</td>
+                    <td title="@item.EmailAddress">@item.EmailAddress</td>
+                    <td title="@item.ReporterName">@item.ReporterName</td>
+                    <td title="@item.Type">@item.Type</td>
+                    <td title="@item.Device">@item.Device</td>
+                    <td title="@item.Location">@item.Location</td>
+                    <td title="@item.EchoMachine">@item.EchoMachine</td>
+                    <td title="@item.ClinicalEngNumber">@item.ClinicalEngNumber</td>
+                    <td title="@item.SerialNumber">@item.SerialNumber</td>
+                    <td title="@item.PropertyTagNumber">@item.PropertyTagNumber</td>
+                    <td>@(item.AnnualPreventiveDueDate?.ToString("dd/MM/yyyy") ?? "-")</td>
+                    <td title="@item.Description">@item.Description</td>
+                    <td>@if (!string.IsNullOrEmpty(item.ImagePath)) { <a href="@item.ImagePath" target="_blank">View</a> }</td>
+                    <td><span class="badge @priorityClass">@item.Priority ●</span></td>
+                    <td>
+                        @if (isAdmin)
+                        {
+                            <form asp-action="UpdateStatus" method="post" class="dashboard-status-form">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <select name="status" class="form-select form-select-sm">
+                                    <option selected="@(item.ResolvedStatus == "pending")">pending</option>
+                                    <option selected="@(item.ResolvedStatus == "underprocess")">underprocess</option>
+                                    <option selected="@(item.ResolvedStatus == "Resolved")">Resolved</option>
+                                </select>
+                                <button class="btn btn-sm btn-outline-primary" title="Save status">Save</button>
+                            </form>
+                        }
+                        else
+                        {
+                            @item.ResolvedStatus
+                        }
+                    </td>
+                    <td><div class="dashboard-actions"><span>@(item.ResolvedOn?.ToString("dd/MM/yyyy HH:mm") ?? "-")</span><a class="btn btn-sm btn-outline-secondary" asp-controller="Communications" asp-action="Index" asp-route-reportId="@item.Id">Messages</a></div></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,172 @@
+@model IncidentRegistrationMvc.Models.FormResponse
+@inject IncidentRegistrationMvc.Services.IClientConfigurationService ClientConfigurationService
+@{
+    var clientConfiguration = await ClientConfigurationService.GetClientConfigurationAsync();
+    var appTitle = clientConfiguration.ProjectTitle;
+    ViewData["Title"] = appTitle;
+}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-purple text-white">
+                <h4 class="mb-0">@appTitle</h4>
+            </div>
+            <div class="card-body">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success">@TempData["Success"]</div>
+                }
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="ReporterName" class="form-label"></label>
+                            <input asp-for="ReporterName" class="form-control" />
+                            <span asp-validation-for="ReporterName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="EmailAddress" class="form-label"></label>
+                            <input asp-for="EmailAddress" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Type" class="form-label"></label>
+                            <select asp-for="Type" asp-items="ViewBag.TypeOptions" class="form-select">
+                                <option value="">Select Type</option>
+                            </select>
+                            <span asp-validation-for="Type" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Device" class="form-label"></label>
+                            <select asp-for="Device" asp-items="ViewBag.DeviceOptions" class="form-select" id="deviceSelect">
+                                <option value="">Select Device</option>
+                            </select>
+                            <span asp-validation-for="Device" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 d-none" id="otherDeviceWrapper">
+                            <label asp-for="OtherDevice" class="form-label"></label>
+                            <input asp-for="OtherDevice" class="form-control" />
+                            <span asp-validation-for="OtherDevice" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Priority" class="form-label"></label>
+                            <select asp-for="Priority" asp-items="ViewBag.PriorityOptions" class="form-select">
+                                <option value="">Select Priority</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Location" class="form-label"></label>
+                            <select asp-for="Location" asp-items="ViewBag.LocationOptions" class="form-select" id="locationSelect">
+                                <option value="">Select Location</option>
+                            </select>
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 d-none" id="machineSelectWrapper">
+                            <label asp-for="EchoMachine" class="form-label"></label>
+                            <select asp-for="EchoMachine" class="form-select" id="machineSelect" data-selected-machine="@Model.EchoMachine">
+                                <option value="">Select Machine</option>
+                            </select>
+                            <span asp-validation-for="EchoMachine" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 d-none machine-detail">
+                            <label asp-for="ClinicalEngNumber" class="form-label"></label>
+                            <input asp-for="ClinicalEngNumber" class="form-control" />
+                        </div>
+                        <div class="col-md-6 d-none machine-detail">
+                            <label asp-for="SerialNumber" class="form-label"></label>
+                            <input asp-for="SerialNumber" class="form-control" />
+                        </div>
+                        <div class="col-md-6 d-none machine-detail">
+                            <label asp-for="PropertyTagNumber" class="form-label"></label>
+                            <input asp-for="PropertyTagNumber" class="form-control" />
+                        </div>
+                        <div class="col-md-6 d-none machine-detail">
+                            <label asp-for="AnnualPreventiveDueDate" class="form-label"></label>
+                            <input asp-for="AnnualPreventiveDueDate" type="date" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ImageFile" class="form-label">Upload Image</label>
+                            <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" rows="4" class="form-control"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-purple mt-4">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script>
+const deviceSelect = document.getElementById('deviceSelect');
+const otherDeviceWrapper = document.getElementById('otherDeviceWrapper');
+const otherDeviceInput = document.getElementById('OtherDevice');
+const locationSelect = document.getElementById('locationSelect');
+const machineSelectWrapper = document.getElementById('machineSelectWrapper');
+const machineSelect = document.getElementById('machineSelect');
+const machineDetails = document.querySelectorAll('.machine-detail');
+const clinicalEngInput = document.getElementById('ClinicalEngNumber');
+const serialNumberInput = document.getElementById('SerialNumber');
+const propertyTagInput = document.getElementById('PropertyTagNumber');
+const annualPreventiveDueDateInput = document.getElementById('AnnualPreventiveDueDate');
+const locationMachines = @Html.Raw(ViewBag.LocationMachinesJson ?? "[]");
+
+function toggleOtherDevice() {
+    const showOtherDevice = deviceSelect.value === 'Other';
+    otherDeviceWrapper.classList.toggle('d-none', !showOtherDevice);
+
+    if (!showOtherDevice) {
+        otherDeviceInput.value = '';
+    }
+}
+
+deviceSelect.addEventListener('change', toggleOtherDevice);
+toggleOtherDevice();
+
+function clearMachineDetails() {
+    clinicalEngInput.value = '';
+    serialNumberInput.value = '';
+    propertyTagInput.value = '';
+    annualPreventiveDueDateInput.value = '';
+    machineDetails.forEach((detail) => detail.classList.add('d-none'));
+}
+
+function showMachineDetails(machine) {
+    clinicalEngInput.value = machine?.ClinicalEngNumber ?? '';
+    serialNumberInput.value = machine?.SerialNumber ?? '';
+    propertyTagInput.value = machine?.PropertyTagNumber ?? '';
+    annualPreventiveDueDateInput.value = machine?.AnnualPreventiveDueDate ?? '';
+    machineDetails.forEach((detail) => detail.classList.toggle('d-none', !machine));
+}
+
+function populateMachinesForLocation() {
+    const selectedLocation = locationSelect.value;
+    const machines = locationMachines.filter((machine) => machine.Location === selectedLocation);
+    const currentMachine = machineSelect.value || machineSelect.dataset.selectedMachine;
+
+    machineSelect.innerHTML = '<option value="">Select Machine</option>';
+    machines.forEach((machine) => {
+        const option = document.createElement('option');
+        option.value = machine.EchoMachine;
+        option.textContent = machine.EchoMachine;
+        machineSelect.appendChild(option);
+    });
+
+    machineSelectWrapper.classList.toggle('d-none', machines.length === 0);
+    machineSelect.value = machines.some((machine) => machine.EchoMachine === currentMachine) ? currentMachine : '';
+    machineSelect.dataset.selectedMachine = '';
+    showMachineDetails(machines.find((machine) => machine.EchoMachine === machineSelect.value));
+}
+
+locationSelect.addEventListener('change', populateMachinesForLocation);
+machineSelect.addEventListener('change', () => {
+    const machine = locationMachines.find((item) => item.Location === locationSelect.value && item.EchoMachine === machineSelect.value);
+    showMachineDetails(machine);
+});
+
+populateMachinesForLocation();
+</script>
+}

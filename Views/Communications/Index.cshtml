@@ -1,0 +1,9 @@
+@model List<IncidentRegistrationMvc.Models.ReportMessage>
+@{ ViewData["Title"] = "Messages"; var recipients = (List<IncidentRegistrationMvc.Models.User>)ViewBag.Recipients; int? reportId = ViewBag.ReportId; }
+<div class="page-heading"><div><span class="eyebrow">Communication</span><h2>@(reportId.HasValue ? $"Report #{reportId:0000} messages" : "Messages")</h2></div></div>
+<div class="card mb-4"><div class="card-body">
+<form asp-action="Send" method="post" class="row g-2">@Html.AntiForgeryToken()<input type="hidden" name="reportId" value="@reportId" />
+<div class="col-md-3"><select name="recipientUserId" class="form-select" required><option value="">Send to...</option>@foreach(var u in recipients){<option value="@u.UserId">@u.Username (@u.UserType)</option>}</select></div>
+<div class="col-md-7"><textarea name="message" maxlength="2000" class="form-control" rows="2" required placeholder="Write a message or reply..."></textarea></div>
+<div class="col-md-2"><button class="btn btn-purple w-100">Send</button></div></form></div></div>
+@foreach(var m in Model){<div class="card mb-2"><div class="card-body py-3"><strong>@m.SenderUser.Username</strong> → @m.RecipientUser.Username <small class="text-muted">@m.CreatedOn.ToString("dd/MM/yyyy HH:mm")</small>@if(m.FormResponseId.HasValue){<a class="ms-2" asp-route-reportId="@m.FormResponseId">#@m.FormResponseId.Value.ToString("0000")</a>}<div>@m.Message</div></div></div>}

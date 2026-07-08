@@ -1,0 +1,81 @@
+@model IncidentRegistrationMvc.Models.ConfigureClient
+@{
+    ViewData["Title"] = "Client Configuration";
+}
+
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">Administration</span>
+        <h2>Client Configuration</h2>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="card">
+    <div class="card-body p-4">
+        <form asp-action="Index" method="post">
+            @Html.AntiForgeryToken()
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="CreatedOn" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label asp-for="ProjectTitle" class="form-label"></label>
+                    <input asp-for="ProjectTitle" class="form-control" />
+                    <span asp-validation-for="ProjectTitle" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ClientName" class="form-label"></label>
+                    <input asp-for="ClientName" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ContactNo" class="form-label"></label>
+                    <input asp-for="ContactNo" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Website" class="form-label"></label>
+                    <input asp-for="Website" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="SupportContact" class="form-label"></label>
+                    <input asp-for="SupportContact" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="SupportEmail" class="form-label"></label>
+                    <input asp-for="SupportEmail" class="form-control" />
+                    <span asp-validation-for="SupportEmail" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="City" class="form-label"></label>
+                    <input asp-for="City" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Country" class="form-label"></label>
+                    <input asp-for="Country" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="Address" class="form-label"></label>
+                    <textarea asp-for="Address" rows="3" class="form-control"></textarea>
+                </div>
+                <div class="col-12">
+                    <div class="form-check">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label"></label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-purple mt-4">Save Configuration</button>
+        </form>
+    </div>
+</div>

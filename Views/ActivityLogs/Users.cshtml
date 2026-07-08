@@ -1,0 +1,51 @@
+@model List<IncidentRegistrationMvc.Models.UserActivityLog>
+@{
+    ViewData["Title"] = "User Activity";
+}
+
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">Audit</span>
+        <h2>User Activity</h2>
+    </div>
+    <a class="btn btn-outline-secondary" asp-controller="ActivityLogs" asp-action="AccessRights">Access Rights Log</a>
+</div>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-warning">@ViewBag.Error</div>
+}
+
+<div class="data-panel app-table-panel">
+    <div class="table-responsive app-table-scroll">
+        <table class="table table-hover align-middle app-data-table">
+            <thead>
+                <tr>
+                    <th>When</th>
+                    <th>User Id</th>
+                    <th>Activity</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>User Type</th>
+                    <th>Active</th>
+                    <th>By</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.ActivityOn.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td>@item.UserId</td>
+                        <td><span class="status-pill status-@item.ActivityType.ToLowerInvariant()">@item.ActivityType</span></td>
+                        <td>@item.OldUsername -> @item.NewUsername</td>
+                        <td>@item.OldEmail -> @item.NewEmail</td>
+                        <td>@item.OldUserType -> @item.NewUserType</td>
+                        <td>@item.OldIsActive -> @item.NewIsActive</td>
+                        <td>@(item.ActivityBy ?? "-")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+USE HospitalDB;
+GO
+
+IF COL_LENGTH('Users', 'IsActive') IS NULL
+BEGIN
+    ALTER TABLE Users
+    ADD IsActive BIT NOT NULL CONSTRAINT DF_Users_IsActive DEFAULT 1;
+END
+GO
+
+UPDATE Users
+SET IsActive = 1
+WHERE IsActive IS NULL;
+GO

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <Compile Include="..\Services\IClientConfigurationService.cs" Link="Services\IClientConfigurationService.cs" />
+    <Compile Include="..\Services\ClientConfigurationSnapshot.cs" Link="Services\ClientConfigurationSnapshot.cs" />
+  </ItemGroup>
+</Project>
